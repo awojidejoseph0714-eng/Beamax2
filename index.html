@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beamax 2.4 - 1D Beam Structural Analysis & Finite Element Engine</title>
+    <link rel="stylesheet" href="styles/win-classic.css">
+    <link rel="stylesheet" href="styles/calculations.css">
+    <link rel="stylesheet" href="styles/mdi.css">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+
+    <!-- Top Menu Bar -->
+    <div class="menu-bar" id="menuBar">
+        <!-- File Menu -->
+        <div class="menu-item" id="menuFile">
+            <span>File</span>
+            <div class="menu-dropdown">
+                <div class="dropdown-item" id="actionNewBeam">New Beam... <span class="dropdown-shortcut">Ctrl+N</span></div>
+                <div class="dropdown-item" id="actionOpen">Open (*.bcb)... <span class="dropdown-shortcut">Ctrl+O</span></div>
+                <div class="dropdown-item" id="actionSave">Save (*.bcb)... <span class="dropdown-shortcut">Ctrl+S</span></div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" onclick="window.print()">Print Report... <span class="dropdown-shortcut">Ctrl+P</span></div>
+            </div>
+        </div>
+
+        <!-- Edit Menu -->
+        <div class="menu-item" id="menuEdit">
+            <span>Edit</span>
+            <div class="menu-dropdown">
+                <div class="dropdown-item" id="actionProperties">Beam Properties...</div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" onclick="const m = window.app?.getActiveModel(); if(m) m.clear();">Clear Supports &amp; Loads</div>
+            </div>
+        </div>
+
+        <!-- Create Menu -->
+        <div class="menu-item" id="menuCreate">
+            <span>Create</span>
+            <div class="menu-dropdown">
+                <div class="dropdown-item" id="actionFixedSupport">Fixed Support...</div>
+                <div class="dropdown-item" id="actionHingedSupport">Hinged Support...</div>
+                <div class="dropdown-item" id="actionRollerSupport">Roller Support...</div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" id="actionPointLoad">Point Load...</div>
+                <div class="dropdown-item" id="actionDistLoad">Linear Distributed Load...</div>
+            </div>
+        </div>
+
+        <!-- View Menu -->
+        <div class="menu-item" id="menuView">
+            <span>View</span>
+            <div class="menu-dropdown">
+                <div class="dropdown-item" onclick="const w=window.app?.getActiveWindow(); if(w) w.element.querySelector('[data-view=BEAM]').click()">Beam with Loads</div>
+                <div class="dropdown-item" onclick="const w=window.app?.getActiveWindow(); if(w) w.element.querySelector('[data-view=SFD]').click()">Shear Force Diagram</div>
+                <div class="dropdown-item" onclick="const w=window.app?.getActiveWindow(); if(w) w.element.querySelector('[data-view=BMD]').click()">Bending Moment Diagram</div>
+                <div class="dropdown-item" onclick="const w=window.app?.getActiveWindow(); if(w) w.element.querySelector('[data-view=DEFLECTION]').click()">Deflection Curve</div>
+            </div>
+        </div>
+
+        <!-- Calculations Menu (Dynamically enabled/disabled based on solvability) -->
+        <div class="menu-item disabled" id="menuCalculations" title="Open structural analysis calculations and methods">
+            <span style="font-weight: 600; color: #005a9e;">Calculations</span>
+        </div>
+
+        <!-- Help Menu -->
+        <div class="menu-item" id="menuHelp">
+            <span>Help</span>
+            <div class="menu-dropdown">
+                <div class="dropdown-item" id="actionAbout">About Beamax...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Toolbar -->
+    <div class="toolbar">
+        <button class="tool-btn" id="toolNewBeam" title="Create New Beam">
+            <span class="tool-icon">📄</span> New
+        </button>
+        <button class="tool-btn" id="toolOpen" title="Open Beamax .bcb File">
+            <span class="tool-icon">📂</span> Open
+        </button>
+        <button class="tool-btn" id="toolSave" title="Save Beamax .bcb File">
+            <span class="tool-icon">💾</span> Save
+        </button>
+
+        <div class="toolbar-separator"></div>
+
+        <button class="tool-btn" id="toolFixedSupport" title="Add Fixed Support (Clamped)">
+            <span class="tool-icon">🔒</span> Fixed Support
+        </button>
+        <button class="tool-btn" id="toolHingedSupport" title="Add Hinged Support (Pinned)">
+            <span class="tool-icon">▲</span> Hinged Support
+        </button>
+        <button class="tool-btn" id="toolRollerSupport" title="Add Roller Support">
+            <span class="tool-icon">⚪</span> Roller Support
+        </button>
+
+        <div class="toolbar-separator"></div>
+
+        <button class="tool-btn" id="toolPointLoad" title="Add Point Load">
+            <span class="tool-icon">⬇</span> Point Load
+        </button>
+        <button class="tool-btn" id="toolDistLoad" title="Add Distributed Load">
+            <span class="tool-icon">⇊</span> Distributed Load
+        </button>
+
+        <div class="toolbar-separator"></div>
+
+        <button class="tool-btn" id="toolProperties" title="Beam Properties">
+            <span class="tool-icon">⚙</span> Properties
+        </button>
+
+        <button class="tool-btn disabled" id="toolCalculations" title="Open Structural Analysis Calculations" style="background: #e8f4fd; border: 1px solid #70c0e8; font-weight: 600;">
+            <span class="tool-icon">📐</span> Calculations
+        </button>
+
+        <button class="tool-btn disabled" id="toolDesign" title="Open Beam Design Module" style="background: #e8fde8; border: 1px solid #70e870; font-weight: 600;">
+            <span class="tool-icon">🏗️</span> Design
+        </button>
+    </div>
+
+    <!-- Hidden file input for .bcb files -->
+    <input type="file" id="fileInput" accept=".bcb" style="display: none;">
+
+    <!-- Workspace Container -->
+    <div class="workspace-container">
+        <!-- Left Docked Tasks & Properties Pane -->
+        <div class="tasks-pane">
+            <button class="sidebar-toggle" id="sidebarToggle">◀ Properties</button>
+            <div class="pane-header">
+                <span>BEAM PROPERTIES</span>
+            </div>
+            <div class="pane-section">
+                <div class="prop-row"><span class="prop-label">Span Length (L):</span><span class="prop-val" id="propLength">8.00 m</span></div>
+                <div class="prop-row"><span class="prop-label">Elasticity (E):</span><span class="prop-val" id="propElasticity">2.10e+8 kN/m²</span></div>
+                <div class="prop-row"><span class="prop-label">Inertia (I):</span><span class="prop-val" id="propInertia">8.36e-5 m⁴</span></div>
+                <div class="prop-row"><span class="prop-label">Rigidity (EI):</span><span class="prop-val" id="propEI">17556.0 kN·m²</span></div>
+            </div>
+
+            <div class="pane-section">
+                <h4>Supports</h4>
+                <ul class="items-list" id="supportsList"></ul>
+            </div>
+
+            <div class="pane-section">
+                <h4>Loads</h4>
+                <ul class="items-list" id="loadsList"></ul>
+            </div>
+        </div>
+
+        <!-- MDI Workspace -->
+        <div class="mdi-workspace" id="mdiWorkspace"></div>
+
+        <!-- Calculations Side-Dialog Panel -->
+        <div class="calc-sidebar" id="calcSidebar">
+            <div class="calc-sidebar-header">
+                <span>STRUCTURAL ANALYSIS CALCULATIONS</span>
+                <button class="calc-close-btn" id="closeCalcSidebar">&times;</button>
+            </div>
+
+            <!-- Sub-Toolbar for Analysis Methods -->
+            <div class="calc-sub-toolbar">
+                <button class="calc-method-btn active" id="btnMethodMatrix">Matrix Stiffness</button>
+                <button class="calc-method-btn" id="btnMethodDirect">Direct Statics</button>
+                <button class="calc-method-btn" id="btnMethodThreeMoment">Three Moments</button>
+                <button class="calc-method-btn" id="btnMethodFixedEnd">Fixed-End / Cross</button>
+                <button class="calc-method-btn" id="btnMethodDeflection">Deflection (Macaulay)</button>
+            </div>
+
+            <!-- Calculations Content Body -->
+            <div class="calc-content-body" id="calcContent">
+                <!-- Dynamically populated by app.js -->
+            </div>
+        </div>
+
+        <!-- Design Side-Dialog Panel -->
+        <div class="calc-sidebar" id="designSidebar">
+            <div class="calc-sidebar-header">
+                <span>BEAM DESIGN MODULE</span>
+                <button class="calc-close-btn" id="closeDesignSidebar">&times;</button>
+            </div>
+            
+            <details class="design-form-container" open style="padding: 15px; background: #f8f9fa; border-bottom: 1px solid #ccc; width: 100%; box-sizing: border-box;">
+                <summary style="margin-top: 0; margin-bottom: 10px; color: #005a9e; font-weight: bold; cursor: pointer; outline: none;">Design Configuration</summary>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label for="designCode" style="font-size: 11px;">Design Code:</label>
+                        <select id="designCode" class="win-select" style="width: 100%;">
+                            <option value="BS8110" selected>BS 8110</option>
+                            <option value="EC2">Eurocode 2</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label for="designMaterial" style="font-size: 11px;">Material:</label>
+                        <select id="designMaterial" class="win-select" style="width: 100%;">
+                            <option value="RC" selected>Reinforced Concrete</option>
+                            <option value="STEEL">Structural Steel</option>
+                            <option value="TIMBER">Timber</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label for="designB" style="font-size: 11px;">Width b (mm):</label>
+                        <input type="number" id="designB" value="225" style="width: 100%;">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label for="designH" style="font-size: 11px;">Depth h (mm):</label>
+                        <input type="number" id="designH" value="450" style="width: 100%;">
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label for="designFcu" style="font-size: 11px;">fcu / fck (MPa):</label>
+                        <input type="number" id="designFcu" value="25" style="width: 100%;">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label for="designFy" style="font-size: 11px;">fy (MPa):</label>
+                        <input type="number" id="designFy" value="410" style="width: 100%;">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label for="designCover" style="font-size: 11px;">Cover (mm):</label>
+                        <input type="number" id="designCover" value="25" style="width: 100%;">
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label for="designMainBar" style="font-size: 11px;">Main Bar Φ (mm):</label>
+                        <select id="designMainBar" class="win-select" style="width: 100%;">
+                            <option value="12">12</option>
+                            <option value="16" selected>16</option>
+                            <option value="20">20</option>
+                            <option value="25">25</option>
+                            <option value="32">32</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label for="designLink" style="font-size: 11px;">Link Φ (mm):</label>
+                        <select id="designLink" class="win-select" style="width: 100%;">
+                            <option value="8">8</option>
+                            <option value="10" selected>10</option>
+                            <option value="12">12</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button id="btnRunDesign" class="win-btn primary" style="width: 100%; padding: 6px; font-weight: bold;">Run Design Analysis</button>
+            </details>
+
+            <div class="calc-content-body" id="designContent" style="height: calc(100% - 250px);">
+                <!-- Dynamically populated by rcDesign.js -->
+                <p style="color: #777; padding: 15px;">Configure your parameters and click "Run Design Analysis" to generate the design report.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-field">
+            <div class="status-indicator" id="statusIndicator"></div>
+            <span id="statusText">Beam Status: Ready</span>
+        </div>
+        <div class="status-field">
+            <span id="statusEquilibrium">Equilibrium: PASS</span>
+        </div>
+        <div class="status-field" style="margin-left: auto;">
+            <span id="statusCoord">x = 0.00 m</span>
+        </div>
+    </div>
+
+    <!-- Modal Dialogs -->
+    
+    <!-- New / Edit Beam Dialog -->
+    <div class="dialog-overlay" id="dialogNewBeam">
+        <div class="win-dialog">
+            <div class="dialog-titlebar">
+                <span>Beam Properties</span>
+                <button class="dialog-close">&times;</button>
+            </div>
+            <form id="formNewBeam">
+                <div class="dialog-body">
+                    <div class="form-group">
+                        <label for="inputBeamLength">Beam length (m):</label>
+                        <input type="number" id="inputBeamLength" step="any" min="0.001" max="500" value="8.0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputBeamElasticity">Modulus of elasticity E (kN/m²):</label>
+                        <input type="number" id="inputBeamElasticity" step="any" min="1" value="210000000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputBeamInertia">Moment of inertia I (m⁴):</label>
+                        <input type="number" id="inputBeamInertia" step="any" min="0.000000001" value="0.0000836" required>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button type="submit" class="win-btn primary">OK</button>
+                    <button type="button" class="win-btn dialog-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Fixed Support Dialog -->
+    <div class="dialog-overlay" id="dialogFixedSupport">
+        <div class="win-dialog">
+            <div class="dialog-titlebar">
+                <span>Fixed Support</span>
+                <button class="dialog-close">&times;</button>
+            </div>
+            <form id="formFixedSupport">
+                <div class="dialog-body">
+                    <div class="form-group">
+                        <label for="inputFixedX">Support position x (m):</label>
+                        <input type="number" id="inputFixedX" step="any" min="0" value="0.0" required>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button type="submit" class="win-btn primary">OK</button>
+                    <button type="button" class="win-btn dialog-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hinged Support Dialog -->
+    <div class="dialog-overlay" id="dialogHingedSupport">
+        <div class="win-dialog">
+            <div class="dialog-titlebar">
+                <span>Hinged Support</span>
+                <button class="dialog-close">&times;</button>
+            </div>
+            <form id="formHingedSupport">
+                <div class="dialog-body">
+                    <div class="form-group">
+                        <label for="inputHingedX">Support position x (m):</label>
+                        <input type="number" id="inputHingedX" step="any" min="0" value="4.0" required>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button type="submit" class="win-btn primary">OK</button>
+                    <button type="button" class="win-btn dialog-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Roller Support Dialog -->
+    <div class="dialog-overlay" id="dialogRollerSupport">
+        <div class="win-dialog">
+            <div class="dialog-titlebar">
+                <span>Roller Support</span>
+                <button class="dialog-close">&times;</button>
+            </div>
+            <form id="formRollerSupport">
+                <div class="dialog-body">
+                    <div class="form-group">
+                        <label for="inputRollerX">Support position x (m):</label>
+                        <input type="number" id="inputRollerX" step="any" min="0" value="4.0" required>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button type="submit" class="win-btn primary">OK</button>
+                    <button type="button" class="win-btn dialog-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Point Load Dialog -->
+    <div class="dialog-overlay" id="dialogPointLoad">
+        <div class="win-dialog">
+            <div class="dialog-titlebar">
+                <span>Point Load</span>
+                <button class="dialog-close">&times;</button>
+            </div>
+            <form id="formPointLoad">
+                <div class="dialog-body">
+                    <div class="form-group">
+                        <label for="inputPointX">Load position x (m):</label>
+                        <input type="number" id="inputPointX" step="any" min="0" value="2.0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPointP">Load value P (kN):</label>
+                        <input type="number" id="inputPointP" step="any" value="10.0" required>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button type="submit" class="win-btn primary">OK</button>
+                    <button type="button" class="win-btn dialog-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Distributed Load Dialog -->
+    <div class="dialog-overlay" id="dialogDistLoad">
+        <div class="win-dialog">
+            <div class="dialog-titlebar">
+                <span>Linear Distributed Load</span>
+                <button class="dialog-close">&times;</button>
+            </div>
+            <form id="formDistLoad">
+                <div class="dialog-body">
+                    <div class="form-group">
+                        <label for="inputDistStart">Load start position (m):</label>
+                        <input type="number" id="inputDistStart" step="any" min="0" value="0.0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDistLen">Load length (m):</label>
+                        <input type="number" id="inputDistLen" step="any" min="0.001" value="4.0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDistQ">Load value q (kN/m):</label>
+                        <input type="number" id="inputDistQ" step="any" value="24.0" required>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button type="submit" class="win-btn primary">OK</button>
+                    <button type="button" class="win-btn dialog-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Support Dialog -->
+    <div class="dialog-overlay" id="dialogEditSupport">
+        <div class="win-dialog">
+            <div class="dialog-titlebar"><span>Edit Support</span><button class="dialog-close">&times;</button></div>
+            <form id="formEditSupport">
+                <div class="dialog-body">
+                    <div class="form-group">
+                        <label for="editSupportType">Support type:</label>
+                        <select id="editSupportType" class="win-select">
+                            <option value="Fixed">Fixed (Clamped)</option>
+                            <option value="Hinged">Hinged (Pinned)</option>
+                            <option value="Roller">Roller</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSupportX">Position x (m):</label>
+                        <input type="number" id="editSupportX" step="any" min="0" required>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button type="submit" class="win-btn primary">OK</button>
+                    <button type="button" class="win-btn dialog-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Point Load Dialog -->
+    <div class="dialog-overlay" id="dialogEditPointLoad">
+        <div class="win-dialog">
+            <div class="dialog-titlebar"><span>Edit Point Load</span><button class="dialog-close">&times;</button></div>
+            <form id="formEditPointLoad">
+                <div class="dialog-body">
+                    <div class="form-group">
+                        <label for="editPointX">Load position x (m):</label>
+                        <input type="number" id="editPointX" step="any" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPointP">Load value P (kN):</label>
+                        <input type="number" id="editPointP" step="any" required>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button type="submit" class="win-btn primary">OK</button>
+                    <button type="button" class="win-btn dialog-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Distributed Load Dialog -->
+    <div class="dialog-overlay" id="dialogEditDistLoad">
+        <div class="win-dialog">
+            <div class="dialog-titlebar"><span>Edit Distributed Load</span><button class="dialog-close">&times;</button></div>
+            <form id="formEditDistLoad">
+                <div class="dialog-body">
+                    <div class="form-group">
+                        <label for="editDistStart">Load start position (m):</label>
+                        <input type="number" id="editDistStart" step="any" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDistLen">Load length (m):</label>
+                        <input type="number" id="editDistLen" step="any" min="0.001" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDistQ">Load value q (kN/m):</label>
+                        <input type="number" id="editDistQ" step="any" required>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button type="submit" class="win-btn primary">OK</button>
+                    <button type="button" class="win-btn dialog-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- About Dialog -->
+    <div class="dialog-overlay" id="dialogAbout">
+        <div class="win-dialog">
+            <div class="dialog-titlebar">
+                <span>About Beamax</span>
+                <button class="dialog-close">&times;</button>
+            </div>
+            <div class="dialog-body" style="text-align: center;">
+                <div style="font-size: 32px; margin-bottom: 8px;">📐</div>
+                <h3 style="margin-bottom: 4px;">Beamax 2.4</h3>
+                <p style="color: #555; margin-bottom: 12px;">1D Beam Structural Analysis & Finite Element Engine</p>
+                <p style="font-size: 11px; color: #777;">Full Euler-Bernoulli direct stiffness matrix solver with analytical methods (Direct Statics, Clapeyron Three Moments, Fixed-End Moments, Macaulay Deflection Integration).</p>
+            </div>
+            <div class="dialog-footer">
+                <button type="button" class="win-btn primary dialog-cancel">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Module Script -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

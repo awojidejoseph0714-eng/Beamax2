@@ -1,0 +1,283 @@
+/* calculations.css - Calculations Side-Dialog & Structural Analysis Methods UI */
+
+.calc-sidebar {
+    width: 440px;
+    flex-shrink: 0;
+    background-color: #ffffff;
+    border-left: 1px solid #adadad;
+    display: none;
+    flex-direction: column;
+    z-index: 9000;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+}
+
+.calc-sidebar.open {
+    display: flex;
+}
+
+.calc-sidebar-header {
+    background: linear-gradient(to right, #005a9e 0%, #0078d7 100%);
+    color: #ffffff;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.calc-close-btn {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.calc-close-btn:hover {
+    background-color: #e81123;
+}
+
+/* Method Sub-Toolbar inside Calculations Side-Dialog */
+.calc-sub-toolbar {
+    background-color: #f0f3f6;
+    border-bottom: 1px solid #d0d7de;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 4px;
+    gap: 4px;
+}
+
+.calc-method-btn {
+    background: #ffffff;
+    border: 1px solid #c0c6cc;
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #24292f;
+    transition: all 0.15s ease;
+}
+
+.calc-method-btn:hover:not(.disabled) {
+    background-color: #e5f1fb;
+    border-color: #0078d7;
+    color: #005a9e;
+}
+
+.calc-method-btn.active {
+    background-color: #0078d7;
+    border-color: #005a9e;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.calc-method-btn.disabled {
+    background-color: #f6f8fa;
+    border-color: #e1e4e8;
+    color: #8c959f;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.calc-content-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #24292f;
+}
+
+.calc-section {
+    margin-bottom: 16px;
+}
+
+.calc-section h3 {
+    font-size: 13px;
+    color: #005a9e;
+    border-bottom: 1px solid #e1e4e8;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+}
+
+.calc-section h4 {
+    font-size: 12px;
+    color: #24292f;
+    margin: 12px 0 6px 0;
+}
+
+.calc-desc {
+    color: #57606a;
+    font-size: 11.5px;
+    margin-bottom: 10px;
+}
+
+.calc-box {
+    background-color: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+}
+
+.calc-eq-list {
+    list-style: none;
+    margin-top: 4px;
+}
+
+.calc-eq-list li {
+    margin-bottom: 6px;
+    font-family: "Cambria Math", "Segoe UI", serif;
+    font-size: 12px;
+}
+
+.calc-results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 12px 0;
+    font-size: 11px;
+}
+
+.calc-results-table th, .calc-results-table td {
+    border: 1px solid #d0d7de;
+    padding: 6px 8px;
+    text-align: left;
+}
+
+.calc-results-table th {
+    background-color: #f6f8fa;
+    font-weight: 600;
+    color: #24292f;
+}
+
+.highlight-val {
+    font-weight: 600;
+    color: #005a9e;
+}
+
+.equilibrium-banner {
+    padding: 8px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    margin: 10px 0;
+}
+
+.equilibrium-banner.pass {
+    background-color: #dafbe1;
+    border: 1px solid #4ac26b;
+    color: #1a7f37;
+}
+
+.equilibrium-banner.fail {
+    background-color: #ffebe9;
+    border: 1px solid #ff8182;
+    color: #cf222e;
+}
+
+.status-tag {
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-weight: 600;
+    font-size: 10px;
+}
+
+.status-tag.pass {
+    background-color: #2e7d32;
+    color: #ffffff;
+}
+
+.status-tag.fail {
+    background-color: #d32f2f;
+    color: #ffffff;
+}
+
+/* Matrix Table */
+.matrix-table-wrapper {
+    overflow-x: auto;
+    margin: 8px 0;
+}
+
+.calc-matrix-table {
+    border-collapse: collapse;
+    font-size: 10.5px;
+    font-family: Consolas, monospace;
+}
+
+.calc-matrix-table td, .calc-matrix-table th {
+    border: 1px solid #d0d7de;
+    padding: 3px 6px;
+    text-align: right;
+}
+
+.calc-matrix-table th {
+    background-color: #f0f3f6;
+    font-size: 10px;
+}
+
+.calc-matrix-table .diag-cell {
+    background-color: #e8f4fd;
+    font-weight: 600;
+}
+
+.segment-card {
+    background: #ffffff;
+    border: 1px solid #e1e4e8;
+    border-radius: 3px;
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.segment-card h5 {
+    color: #005a9e;
+    margin-bottom: 4px;
+}
+
+.latex-eq {
+    text-align: center;
+    margin: 12px 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+/* --- Mobile Responsiveness for Calculations --- */
+@media (max-width: 768px) {
+    .calc-sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 15000;
+        border-left: none;
+    }
+
+    .calc-sub-toolbar {
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+    }
+
+    .calc-method-btn {
+        flex-shrink: 0;
+    }
+
+    .calc-results-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .calc-matrix-table {
+        font-size: 9px;
+    }
+}

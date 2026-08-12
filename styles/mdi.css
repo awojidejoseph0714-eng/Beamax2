@@ -1,0 +1,249 @@
+/* MDI Workspace - the gray desktop area where child windows float */
+.mdi-workspace {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #808080;  /* Classic Windows MDI gray */
+    /* Subtle inset shadow to make it feel recessed */
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+/* When no windows are open, show a tooltip-style hint */
+.mdi-workspace:empty::after {
+    content: 'File → New Beam to begin';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #333;
+    color: #eee;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Segoe UI', sans-serif;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+/* MDI Child Window */
+.mdi-window {
+    position: absolute;
+    min-width: 400px;
+    min-height: 300px;
+    background: #c0c0c0;
+    border: 2px outset #dfdfdf;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+    /* Transition for smooth maximize */
+    transition: box-shadow 0.15s;
+}
+
+.mdi-window.maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none;
+    box-shadow: none;
+}
+
+/* Title Bar */
+.mdi-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 22px;
+    padding: 0 4px;
+    /* Inactive: gray gradient */
+    background: linear-gradient(to right, #808080, #b0b0b0);
+    color: #d0d0d0;
+    font-size: 12px;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: bold;
+    cursor: default;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+/* Active window title bar: classic blue */
+.mdi-window.active .mdi-titlebar {
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: #ffffff;
+}
+
+.mdi-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    padding-left: 2px;
+}
+
+.mdi-titlebar-btns {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.mdi-titlebar-btns button {
+    width: 16px;
+    height: 14px;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+    padding: 0;
+    border: 1px outset #dfdfdf;
+    background: #c0c0c0;
+    color: #000;
+    cursor: pointer;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.mdi-titlebar-btns button:active {
+    border-style: inset;
+}
+
+/* Client Area */
+.mdi-client-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+    border-top: 1px solid #808080;
+}
+
+/* View Tabs inside MDI window */
+.mdi-view-tabs {
+    display: flex;
+    gap: 0;
+    background: #d4d0c8;
+    border-bottom: 1px solid #808080;
+    padding: 2px 4px 0 4px;
+    flex-shrink: 0;
+}
+
+.mdi-view-tabs .tab-btn {
+    padding: 3px 10px;
+    font-size: 11px;
+    font-family: 'Segoe UI', sans-serif;
+    background: #d4d0c8;
+    border: 1px solid #808080;
+    border-bottom: none;
+    cursor: pointer;
+    margin-right: 1px;
+    color: #333;
+    border-radius: 2px 2px 0 0;
+}
+
+.mdi-view-tabs .tab-btn.active {
+    background: #ffffff;
+    border-bottom: 1px solid #ffffff;
+    font-weight: 600;
+    margin-bottom: -1px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Canvas container inside MDI window */
+.mdi-canvas-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.mdi-canvas-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Minimized window - collapsed to just the title bar at the bottom */
+.mdi-window.minimized {
+    height: 22px !important;
+    min-height: 22px;
+    width: 200px !important;
+    min-width: 160px;
+    bottom: 0;
+    top: auto !important;
+    overflow: hidden;
+}
+
+.mdi-window.minimized .mdi-client-area {
+    display: none;
+}
+
+/* Resize handle (bottom-right corner) */
+.mdi-window::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    cursor: nwse-resize;
+    /* Diagonal grip lines */
+    background: linear-gradient(135deg, transparent 30%, #808080 30%, #808080 35%, transparent 35%,
+                transparent 45%, #808080 45%, #808080 50%, transparent 50%,
+                transparent 60%, #808080 60%, #808080 65%, transparent 65%);
+}
+
+.mdi-window.maximized::after {
+    display: none;
+}
+
+/* ============================================ */
+/* Collapsible Properties Sidebar               */
+/* ============================================ */
+
+.tasks-pane {
+    transition: width 0.2s ease, min-width 0.2s ease, padding 0.2s ease;
+    overflow: hidden;
+}
+
+.tasks-pane.collapsed {
+    width: 28px !important;
+    min-width: 28px !important;
+    padding: 0 !important;
+}
+
+.tasks-pane.collapsed .pane-section,
+.tasks-pane.collapsed .pane-header span {
+    display: none;
+}
+
+.sidebar-toggle {
+    width: 100%;
+    height: 22px;
+    background: #d4d0c8;
+    border: 1px outset #dfdfdf;
+    border-left: none;
+    border-right: none;
+    cursor: pointer;
+    font-size: 10px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sidebar-toggle:hover {
+    background: #e8e8e0;
+}
+
+.tasks-pane.collapsed .sidebar-toggle {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    height: auto;
+    padding: 8px 4px;
+    font-size: 11px;
+}
+
+/* Right-click context highlight on canvas elements */
+canvas {
+    cursor: crosshair;
+}

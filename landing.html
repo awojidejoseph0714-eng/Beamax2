@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beamax - Structural Analysis & Design</title>
+    <link rel="stylesheet" href="styles/win-classic.css">
+    <link rel="stylesheet" href="styles/landing.css">
+</head>
+<body>
+
+    <!-- SECTION 1: Header / Navigation -->
+    <header class="landing-header">
+        <div class="logo">
+            <span class="logo-icon">📐</span>
+            <h1>Beamax</h1>
+        </div>
+        <nav class="nav-links">
+            <a href="#benefits">Benefits</a>
+            <a href="#features">Features</a>
+            <a href="https://manual-design.vercel.app" target="_blank" class="external-link">Manual Design Guide ↗</a>
+        </nav>
+        <div class="nav-actions">
+            <a href="welcome.html" class="win-btn primary launch-btn">Launch Workspace</a>
+        </div>
+    </header>
+
+    <!-- SECTION 2: Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h2 class="hero-title">Structural Analysis & Design,<br>Made Simple.</h2>
+            <p class="hero-subtitle">Beamax is a powerful, interactive tool that solves continuous beams and designs reinforced concrete sections—complete with step-by-step mathematical workings. Built for modern engineers and students who want to see exactly how the numbers are calculated.</p>
+            <div class="hero-cta">
+                <a href="welcome.html" class="win-btn primary hero-btn">Start Designing Free</a>
+                <a href="#benefits" class="win-btn hero-btn outline">Learn More</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="app-mockup">
+                <img src="assets/screenshot1.png" alt="Beamax Interface Mockup" onerror="this.src='https://placehold.co/800x450/e0e0e0/555?text=Beamax+Workspace'">
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: What is Beamax? -->
+    <section class="section-light" id="about">
+        <div class="container text-center">
+            <h3 class="section-title">What is Beamax?</h3>
+            <p class="section-text mx-auto">Beamax isn't just a black-box calculator. It is a full engineering environment that uses exact mathematical methods to solve complex continuous beams. Whether you are verifying a manual calculation for a class assignment or quickly checking a design for a real project, Beamax gives you the exact bending moments, shear forces, deflections, and RC reinforcement details you need.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 4: Benefit 1 -->
+    <section class="section-dark" id="benefits">
+        <div class="container grid-2">
+            <div class="text-content">
+                <div class="tag">Benefit</div>
+                <h3 class="section-title text-left">Stop Guessing, Start Knowing</h3>
+                <p class="section-text">Most software spits out a final answer, leaving you wondering how it got there. Beamax acts like a digital tutor. It renders every calculation step-by-step using beautifully formatted LaTeX equations. You can see exactly which numbers are plugged into the formulas, making it incredibly easy to understand the mechanics behind the solution.</p>
+            </div>
+            <div class="image-content">
+                <div class="fake-window">
+                    <div class="fake-titlebar">Mathematical Derivations</div>
+                    <div class="fake-client padding">
+                        <div style="font-family: 'Cambria Math', serif; text-align: center; margin: 15px 0;">
+                            <i>K = M / (bd² f<sub>cu</sub>) = 11250000 / (225 × 415² × 25) = 0.0116</i><br><br>
+                            <i>A<sub>s,calc</sub> = M / (0.95 f<sub>y</sub> z) = 75.3 mm²</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: Benefit 2 -->
+    <section class="section-light">
+        <div class="container grid-2 reverse">
+            <div class="text-content">
+                <div class="tag">Benefit</div>
+                <h3 class="section-title text-left">Everything in One Workspace</h3>
+                <p class="section-text">Say goodbye to switching between different tabs and calculators. Beamax features a Multiple Document Interface (MDI). This means you can open multiple beams at the same time, arrange them in draggable windows, and compare different designs side-by-side right on your screen. It feels just like a professional desktop engineering suite.</p>
+            </div>
+            <div class="image-content">
+                <img src="assets/screenshot2.png" alt="Workspace MDI" class="shadow-img" onerror="this.src='https://placehold.co/600x400/e0e0e0/555?text=Multiple+Windows'">
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: Feature 1 - FEM -->
+    <section class="section-dark" id="features">
+        <div class="container text-center">
+            <div class="tag">Feature</div>
+            <h3 class="section-title">64-Bit Direct Stiffness Method</h3>
+            <p class="section-text mx-auto">At the core of Beamax is a robust Finite Element Method (FEM) solver. It automatically breaks your continuous beam down into nodes and elements, assembles the global stiffness matrix, and solves for exact nodal displacements and rotations. This handles any combination of point loads, distributed loads, and support types flawlessly.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 7: Feature 2 - Exact Roots -->
+    <section class="section-light">
+        <div class="container grid-2">
+            <div class="image-content">
+                <div class="diagram-placeholder">
+                    <svg viewBox="0 0 200 100" style="width:100%; height:100%;"><path d="M10,50 Q50,10 100,50 T190,50" fill="none" stroke="#0078d7" stroke-width="3"/></svg>
+                </div>
+            </div>
+            <div class="text-content">
+                <div class="tag">Feature</div>
+                <h3 class="section-title text-left">Exact Algebraic Root Finding</h3>
+                <p class="section-text">We don't settle for graphical approximations. When Beamax calculates your maximum bending moments, it uses a 1-millimeter micro-sweep resolution to find the exact algebraic peak where shear force equals zero. This ensures your design forces are mathematically perfect, not just "close enough."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: Feature 3 - Classic Solvers -->
+    <section class="section-dark">
+        <div class="container grid-2 reverse">
+            <div class="text-content">
+                <div class="tag">Feature</div>
+                <h3 class="section-title text-left">Classic Solvers Built-In</h3>
+                <p class="section-text">Need to verify a homework assignment? Beamax includes dedicated analytical solvers for the <strong>Three Moment Equation</strong> and <strong>Fixed-End Moments</strong>. It generates the exact compatibility equations, shows the matrix setup, and solves them step-by-step, just like you would on paper.</p>
+            </div>
+            <div class="image-content">
+                 <div class="fake-window">
+                    <div class="fake-titlebar">Three Moment Equation</div>
+                    <div class="fake-client padding text-left">
+                        <b>Span 1:</b> M<sub>1</sub>L<sub>1</sub> + 2M<sub>2</sub>(L<sub>1</sub>+L<sub>2</sub>) + M<sub>3</sub>L<sub>2</sub> = -6(A<sub>1</sub>x̄<sub>1</sub>/L<sub>1</sub> + A<sub>2</sub>x̄<sub>2</sub>/L<sub>2</sub>)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 9: Feature 4 - Deflection -->
+    <section class="section-light">
+        <div class="container text-center">
+            <div class="tag">Feature</div>
+            <h3 class="section-title">Double Integration for Deflection</h3>
+            <p class="section-text mx-auto">Visualize exactly how your beam will bend under load. The app performs double integration of the bending moment equations to plot highly accurate deflection curves. It instantly highlights the maximum deflection point and warns you if the deflection exceeds standard serviceability limits (like L/250).</p>
+        </div>
+    </section>
+
+    <!-- SECTION 10: Screenshot Gallery -->
+    <section class="section-dark">
+        <div class="container text-center">
+            <h3 class="section-title">See Beamax in Action</h3>
+            <p class="section-text mx-auto">A clean, functional interface designed for maximum productivity.</p>
+            
+            <div class="gallery-grid">
+                <img src="assets/screenshot1.png" alt="Gallery 1" onerror="this.src='https://placehold.co/400x300/e0e0e0/555?text=Analysis'">
+                <img src="assets/screenshot2.png" alt="Gallery 2" onerror="this.src='https://placehold.co/400x300/e0e0e0/555?text=Calculations'">
+                <img src="assets/screenshot3.png" alt="Gallery 3" onerror="this.src='https://placehold.co/400x300/e0e0e0/555?text=RC+Design'">
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 11: RC Design Module -->
+    <section class="section-light" id="design">
+        <div class="container grid-2">
+            <div class="text-content">
+                <div class="tag">New Module</div>
+                <h3 class="section-title text-left">Complete BS 8110 RC Design</h3>
+                <p class="section-text">Seamlessly transition from structural analysis to concrete design. The built-in Design Module extracts the exact critical envelope moments and shear forces from your beam. You simply specify your concrete and steel grades, cover, and section dimensions, and Beamax handles the rest in accordance with British Standards.</p>
+            </div>
+            <div class="image-content">
+                <img src="assets/screenshot3.png" alt="RC Design" class="shadow-img" onerror="this.src='https://placehold.co/600x400/e0e0e0/555?text=BS+8110+Design'">
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 12: Automatic Bar Sizing -->
+    <section class="section-dark">
+        <div class="container grid-2 reverse">
+            <div class="text-content">
+                <div class="tag">Smart Suggestion</div>
+                <h3 class="section-title text-left">Automatic Bar & Link Selection</h3>
+                <p class="section-text">You define your preferred Main Bar diameter (e.g., 16mm) and Link diameter (e.g., 10mm). Beamax calculates the required reinforcement area, checks it against strict code minimums, and outputs practical, real-world bar configurations (like "Provide 3Y16") and exact link spacings.</p>
+            </div>
+            <div class="image-content">
+                <div class="fake-window">
+                    <div class="fake-titlebar">Shear Design Results</div>
+                    <div class="fake-client padding">
+                        <div style="background:#e8f5e9; padding:15px; border-left:5px solid #4caf50; font-weight:bold; color:#1a7f37;">
+                            Provide Y10 @ 250mm c/c
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 13: Amendment 3 Compliant -->
+    <section class="section-light">
+        <div class="container text-center">
+            <div class="tag">Standards</div>
+            <h3 class="section-title">Always Up To Date</h3>
+            <p class="section-text mx-auto">Beamax takes modern code amendments seriously. Our design algorithms utilize the latest BS 8110 Amendment 3 safety factors, correctly applying a 1.05 partial safety factor for reinforcement yielding an accurate 0.95 f<sub>y</sub> design strength, giving you safe and compliant results.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 14: Fast & Responsive -->
+    <section class="section-dark">
+        <div class="container grid-2">
+            <div class="image-content">
+                <div class="fake-window" style="width: 250px; margin: 0 auto;">
+                    <div class="fake-titlebar">Mobile View</div>
+                    <div class="fake-client" style="height: 350px; display: flex; align-items:center; justify-content:center; background:#eee;">
+                        Responsive Design
+                    </div>
+                </div>
+            </div>
+            <div class="text-content">
+                <div class="tag">Performance</div>
+                <h3 class="section-title text-left">Lightning Fast, Works Anywhere</h3>
+                <p class="section-text">All calculations are performed natively in your browser. There is no waiting for servers, no loading bars, and no lag. Better yet, the interface is fully responsive. Whether you are on a massive desktop monitor or a tiny smartphone, the workspace adapts perfectly so you can check designs on the go.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 15: Final CTA & Footer -->
+    <section class="cta-section">
+        <div class="container text-center">
+            <h2 style="font-size: 28px; margin-bottom: 20px; color: #fff;">Ready to Ace Your Structural Designs?</h2>
+            <p style="color: #e0e0e0; margin-bottom: 30px; font-size: 16px;">Launch the Beamax workspace now. No installation required.</p>
+            <a href="welcome.html" class="win-btn primary hero-btn" style="box-shadow: 0 4px 10px rgba(0,0,0,0.3);">Launch Workspace</a>
+            <p style="margin-top: 30px;"><a href="https://manual-design.vercel.app" target="_blank" style="color: #90c8f6;">Need more help? Check out the Manual Design Guide.</a></p>
+        </div>
+    </section>
+
+    <footer class="landing-footer">
+        <div class="container">
+            <p>&copy; 2026 Beamax Engineering Software. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

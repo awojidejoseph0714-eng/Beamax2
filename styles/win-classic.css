@@ -1,0 +1,553 @@
+/* win-classic.css - Authentic Windows / MFC Desktop Engineering UI Styling */
+
+:root {
+    --win-bg: #f0f0f0;
+    --win-face: #f5f6f7;
+    --win-border: #ababab;
+    --win-border-dark: #707070;
+    --win-highlight: #0078d7;
+    --win-text: #000000;
+    --win-sidebar-bg: #fbfbfb;
+    --win-canvas-bg: #ffffff;
+    --toolbar-btn-hover: #e5f1fb;
+    --toolbar-btn-border-hover: #0078d7;
+    --status-bar-bg: #f0f0f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    color: var(--win-text);
+    background-color: var(--win-bg);
+    overflow: hidden;
+    user-select: none;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Top Menu Bar --- */
+.menu-bar {
+    background-color: #fcfcfc;
+    border-bottom: 1px solid #d9d9d9;
+    display: flex;
+    padding: 1px 4px;
+    height: 24px;
+    align-items: center;
+    position: relative;
+    z-index: 10000;
+}
+
+.menu-item {
+    padding: 3px 8px;
+    cursor: default;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    position: relative;
+}
+
+.menu-item:hover, .menu-item.active {
+    background-color: #e5f1fb;
+    border-color: #70c0e8;
+}
+
+.menu-item.disabled {
+    color: #a0a0a0 !important;
+    pointer-events: none;
+}
+
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    top: 22px;
+    left: 0;
+    background-color: #f2f2f2;
+    border: 1px solid #979797;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.25);
+    min-width: 180px;
+    padding: 2px 0;
+    z-index: 10001;
+}
+
+.menu-item.active .menu-dropdown {
+    display: block;
+}
+
+.dropdown-item {
+    padding: 4px 24px 4px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: default;
+    position: relative;
+}
+
+.dropdown-item:hover {
+    background-color: #90c8f6;
+    color: #000000;
+}
+
+.dropdown-item.disabled {
+    color: #888888;
+    pointer-events: none;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 3px 2px;
+}
+
+.dropdown-shortcut {
+    color: #666666;
+    font-size: 11px;
+    margin-left: 16px;
+}
+
+/* --- Main Toolbar --- */
+.toolbar {
+    background: linear-gradient(to bottom, #fcfcfc 0%, #e8e8e8 100%);
+    border-bottom: 1px solid #adadad;
+    padding: 2px 6px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 36px;
+}
+
+.tool-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    padding: 3px 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: inherit;
+    color: #111111;
+    height: 28px;
+}
+
+.tool-btn:hover {
+    background-color: #e5f1fb;
+    border-color: #70c0e8;
+}
+
+.tool-btn:active {
+    background-color: #cce4f7;
+    border-color: #005499;
+}
+
+.tool-btn.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.tool-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toolbar-separator {
+    width: 1px;
+    height: 22px;
+    background-color: #c0c0c0;
+    margin: 0 4px;
+}
+
+/* --- App Workspace Layout --- */
+.workspace-container {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+/* --- Left Tasks & Properties Docking Pane --- */
+.tasks-pane {
+    width: 250px;
+    flex-shrink: 0;
+    background-color: var(--win-sidebar-bg);
+    border-right: 1px solid #adadad;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.pane-header {
+    background: linear-gradient(to right, #005a9e 0%, #0078d7 100%);
+    color: #ffffff;
+    padding: 6px 10px;
+    font-weight: 600;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pane-section {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.pane-section h4 {
+    font-size: 11px;
+    color: #005a9e;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.prop-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-size: 11px;
+}
+
+.prop-label {
+    color: #555555;
+}
+
+.prop-val {
+    font-weight: 600;
+    color: #111111;
+}
+
+.items-list {
+    list-style: none;
+    max-height: 120px;
+    overflow-y: auto;
+    border: 1px solid #d0d0d0;
+    background: #ffffff;
+    padding: 2px;
+}
+
+.item-entry {
+    padding: 3px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 11px;
+}
+
+.item-entry:hover {
+    background-color: #e5f1fb;
+}
+
+.btn-del {
+    background: transparent;
+    border: none;
+    color: #d32f2f;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+/* --- Main Drawing Area & Diagram Viewport --- */
+.main-viewport {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+/* Viewport Tabs */
+.view-tabs {
+    background-color: #e8e8e8;
+    border-bottom: 1px solid #adadad;
+    display: flex;
+    padding-left: 6px;
+}
+
+.tab-btn {
+    padding: 5px 14px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    margin-right: 2px;
+    position: relative;
+    top: 1px;
+}
+
+.tab-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.tab-btn.active {
+    background-color: #ffffff;
+    border-color: #adadad;
+    border-top: 2px solid #0078d7;
+    font-weight: 600;
+}
+
+.canvas-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Status Bar --- */
+.status-bar {
+    height: 22px;
+    background-color: var(--status-bar-bg);
+    border-top: 1px solid #adadad;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 11px;
+    color: #333333;
+    gap: 16px;
+}
+
+.status-field {
+    border-right: 1px solid #d0d0d0;
+    padding-right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.status-field:last-child {
+    border-right: none;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #2e7d32;
+}
+
+.status-indicator.unstable {
+    background-color: #d32f2f;
+}
+
+/* --- Classic Modal Dialogs --- */
+.dialog-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 20000;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialog-overlay.open {
+    display: flex;
+}
+
+.win-dialog {
+    background-color: #f0f0f0;
+    border: 1px solid #707070;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    width: 380px;
+    border-radius: 2px;
+}
+
+.dialog-titlebar {
+    background: linear-gradient(to right, #005a9e 0%, #0078d7 100%);
+    color: #ffffff;
+    padding: 4px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.dialog-close {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.dialog-close:hover {
+    background-color: #e81123;
+}
+
+.dialog-body {
+    padding: 16px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 4px 6px;
+    font-family: inherit;
+    font-size: 12px;
+    border: 1px solid #7a7a7a;
+    background-color: #ffffff;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #0078d7;
+    outline: none;
+}
+
+.dialog-footer {
+    background-color: #f0f0f0;
+    border-top: 1px solid #dcdcdc;
+    padding: 8px 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.win-btn {
+    min-width: 75px;
+    padding: 4px 12px;
+    font-family: inherit;
+    font-size: 11px;
+    background: #e1e1e1;
+    border: 1px solid #adadad;
+    cursor: pointer;
+}
+
+.win-btn:hover {
+    background-color: #e5f1fb;
+    border-color: #0078d7;
+}
+
+.win-btn.primary {
+    background-color: #0078d7;
+    color: #ffffff;
+    border-color: #005a9e;
+}
+
+.win-btn.primary:hover {
+    background-color: #106ebe;
+}
+
+/* Select dropdown for dialogs */
+.win-select {
+    width: 100%;
+    padding: 4px 6px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 12px;
+    border: 1px inset #a0a0a0;
+    background: #ffffff;
+    color: #000;
+}
+
+/* Disabled toolbar buttons and menu items */
+.tool-btn.disabled,
+.menu-item.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+    /* Toolbars */
+    .menu-bar, .toolbar {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .toolbar {
+        padding-bottom: 4px;
+    }
+
+    /* Workspace */
+    .workspace-container {
+        flex-direction: column;
+    }
+
+    /* Tasks Pane */
+    .tasks-pane {
+        width: 100%;
+        max-height: 200px;
+        border-right: none;
+        border-bottom: 2px solid #0078d7;
+        transition: max-height 0.3s ease;
+    }
+    
+    .tasks-pane.collapsed {
+        max-height: 28px; /* Just show header */
+        overflow: hidden;
+    }
+    
+    .sidebar-toggle {
+        display: block !important;
+        background: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 4px;
+        margin-right: 8px;
+    }
+
+    .pane-header {
+        cursor: pointer;
+    }
+
+    /* Dialogs */
+    .win-dialog {
+        width: 95vw;
+        max-width: 380px;
+    }
+
+    .dialog-body {
+        padding: 12px;
+    }
+    
+    /* MDI Workspace & Status */
+    .mdi-workspace {
+        flex: 1;
+        width: 100%;
+    }
+    
+    .status-bar {
+        font-size: 10px;
+        padding: 0 4px;
+        gap: 8px;
+    }
+    
+    .status-field {
+        padding-right: 6px;
+    }
+}
