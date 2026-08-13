@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="styles/calculations.css">
     <link rel="stylesheet" href="styles/mdi.css">
     <script>
+        if (!localStorage.getItem('beamax_visited')) {
+            window.location.replace('landing.html');
+        }
+    </script>
+    <script>
         window.MathJax = {
             tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
             options: { skipHtmlTags: ['script','noscript','style','textarea'] }

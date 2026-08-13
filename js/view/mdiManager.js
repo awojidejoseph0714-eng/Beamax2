@@ -131,36 +131,61 @@ export class MdiManager {
                 element.style.height = winObj.previousRect.height;
                 winObj.isMaximized = false;
             } else {
-                winObj.previousRect = {
-                    left: element.style.left,
-                    top: element.style.top,
-                    width: element.style.width,
-                    height: element.style.height
-                };
+                if (!winObj.isMinimized) {
+                    winObj.previousRect = {
+                        left: element.style.left,
+                        top: element.style.top,
+                        width: element.style.width,
+                        height: element.style.height
+                    };
+                }
                 element.style.left = '0px';
                 element.style.top = '0px';
                 element.style.width = '100%';
                 element.style.height = '100%';
                 winObj.isMaximized = true;
+                if (winObj.isMinimized) {
+                    winObj.isMinimized = false;
+                    element.querySelector('.mdi-client-area').style.display = 'flex';
+                }
             }
             this.resizeActiveCanvas();
             this.renderWindow(winObj);
+            if (this.onStateChanged) this.onStateChanged();
         });
 
         btnMin.addEventListener('click', (e) => {
             e.stopPropagation();
             winObj.isMinimized = !winObj.isMinimized;
             if (winObj.isMinimized) {
+                winObj.preMinRect = {
+                    left: element.style.left,
+                    top: element.style.top,
+                    width: element.style.width,
+                    height: element.style.height
+                };
                 element.querySelector('.mdi-client-area').style.display = 'none';
                 element.style.height = 'auto';
+                element.style.width = '250px';
+                
+                // Position at the bottom left roughly
+                element.style.top = 'calc(100% - 35px)';
             } else {
                 element.querySelector('.mdi-client-area').style.display = 'flex';
-                if (!winObj.isMaximized) {
+                if (winObj.preMinRect) {
+                    element.style.left = winObj.preMinRect.left;
+                    element.style.top = winObj.preMinRect.top;
+                    element.style.width = winObj.preMinRect.width;
+                    element.style.height = winObj.preMinRect.height;
+                } else if (!winObj.isMaximized) {
                     element.style.height = winObj.previousRect ? winObj.previousRect.height : '450px';
+                    element.style.width = winObj.previousRect ? winObj.previousRect.width : '700px';
                 } else {
                     element.style.height = '100%';
+                    element.style.width = '100%';
                 }
             }
+            if (this.onStateChanged) this.onStateChanged();
         });
 
         // Draggable
@@ -191,7 +216,10 @@ export class MdiManager {
         });
 
         document.addEventListener('mouseup', () => {
-            isDragging = false;
+            if (isDragging) {
+                isDragging = false;
+                if (this.onStateChanged) this.onStateChanged();
+            }
         });
     }
 

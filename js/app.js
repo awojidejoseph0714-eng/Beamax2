@@ -26,6 +26,7 @@ class BeamaxApp {
         
         this.initDOM();
         this.bindEvents();
+        this.autoLoadWorkspace();
         this.updateMenuState(); // disable menus since no beam exists yet
     }
 
@@ -51,6 +52,11 @@ class BeamaxApp {
                 if (this.calcSidebar) this.calcSidebar.classList.remove('open');
             }
             this.updateMenuState();
+            this.autoSaveWorkspace();
+        };
+
+        this.mdiManager.onStateChanged = () => {
+            this.autoSaveWorkspace();
         };
 
         this.fileInput = document.getElementById('fileInput');
@@ -156,6 +162,7 @@ class BeamaxApp {
                 this.renderCalculationsView();
             }
         }
+        this.autoSaveWorkspace();
     }
 
     updateMenuState() {
@@ -941,6 +948,78 @@ class BeamaxApp {
 
         html += '</div>';
         return html;
+    }
+
+    autoSaveWorkspace() {
+        if (!this.mdiManager) return;
+        const savedWindows = this.mdiManager.windows.map(win => {
+            const buffer = BcbParser.serialize(win.model);
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            const base64 = btoa(binary);
+            return {
+                title: win.title,
+                data: base64,
+                rect: {
+                    left: win.element.style.left,
+                    top: win.element.style.top,
+                    width: win.element.style.width,
+                    height: win.element.style.height
+                },
+                isMaximized: win.isMaximized,
+                isMinimized: win.isMinimized,
+                previousRect: win.previousRect,
+                preMinRect: win.preMinRect
+            };
+        });
+        localStorage.setItem('beamax_workspace', JSON.stringify(savedWindows));
+    }
+
+    autoLoadWorkspace() {
+        const data = localStorage.getItem('beamax_workspace');
+        if (!data) return;
+        try {
+            const savedWindows = JSON.parse(data);
+            savedWindows.forEach(savedWin => {
+                const binary = atob(savedWin.data);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+                const loadedModel = BcbParser.parse(bytes.buffer);
+                let maxId = 0;
+                [...loadedModel.supports, ...loadedModel.pointLoads, ...loadedModel.distributedLoads].forEach(item => {
+                    const num = parseInt(item.id.split('_')[1], 10);
+                    if (!isNaN(num) && num > maxId) maxId = num;
+                });
+                loadedModel._idCounter = maxId + 1;
+
+                const windowObj = this.mdiManager.createWindow(loadedModel, savedWin.title);
+                windowObj.isMaximized = savedWin.isMaximized || false;
+                windowObj.isMinimized = savedWin.isMinimized || false;
+                windowObj.previousRect = savedWin.previousRect || null;
+                windowObj.preMinRect = savedWin.preMinRect || null;
+
+                windowObj.element.style.left = savedWin.rect.left;
+                windowObj.element.style.top = savedWin.rect.top;
+                windowObj.element.style.width = savedWin.rect.width;
+                windowObj.element.style.height = savedWin.rect.height;
+
+                if (windowObj.isMinimized) {
+                    windowObj.element.querySelector('.mdi-client-area').style.display = 'none';
+                }
+
+                loadedModel.subscribe(() => this.onModelChanged(windowObj));
+                this.bindCanvasEvents(windowObj);
+                this.onModelChanged(windowObj);
+            });
+            this.updateMenuState();
+        } catch (err) {
+            console.error("Failed to restore workspace", err);
+        }
     }
 }
 
