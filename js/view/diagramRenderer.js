@@ -74,7 +74,10 @@ export class DiagramRenderer {
 
         const toCanvasX = (x) => this.margin.left + (x / L) * plotW;
         const zeroY = this.margin.top + plotH / 2;
-        const toCanvasY = (val) => zeroY - (val / yLimit) * (plotH / 2);
+        const toCanvasY = (val) => {
+            const plotVal = type === 'BMD' ? -val : val;
+            return zeroY - (plotVal / yLimit) * (plotH / 2);
+        };
 
         // 1. Draw Grid and Axes
         ctx.save();
