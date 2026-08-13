@@ -1,8 +1,8 @@
 /* landing.css - Styling for the Beamax Landing Page */
 
 html, body {
-    height: auto;
-    overflow-y: auto;
+    height: auto !important;
+    overflow: auto !important;
     user-select: auto;
     font-size: 15px; /* Slightly larger base font for reading */
     line-height: 1.6;
