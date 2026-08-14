@@ -1,11 +1,6 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/app", "destination": "/index.html" },
-    { "source": "/home", "destination": "/landing.html" },
-    { "source": "/welcome", "destination": "/welcome.html" }
-  ],
-  "redirects": [
-    { "source": "/", "destination": "/app", "permanent": false }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
