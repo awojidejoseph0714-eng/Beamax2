@@ -697,10 +697,16 @@ class BeamaxApp {
                 formContainer.removeAttribute('open');
             }
             
-            // Trigger MathJax
-            if (window.MathJax && window.MathJax.typesetPromise) {
-                window.MathJax.typesetPromise([this.designContent]).catch(err => console.warn('MathJax typeset:', err));
-            }
+            // Trigger MathJax with retry for async loading
+            const typeset = (el) => {
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    window.MathJax.typesetClear([el]);
+                    window.MathJax.typesetPromise([el]).catch(err => console.warn('MathJax typeset:', err));
+                } else {
+                    setTimeout(() => typeset(el), 100);
+                }
+            };
+            typeset(this.designContent);
         });
     }
 
@@ -861,10 +867,16 @@ class BeamaxApp {
         }
 
         this.calcContent.innerHTML = reportHtml || '<p>Report generation error.</p>';
-        // Trigger MathJax to typeset LaTeX in the calculation report
-        if (window.MathJax && window.MathJax.typesetPromise) {
-            window.MathJax.typesetPromise([this.calcContent]).catch(err => console.warn('MathJax typeset:', err));
-        }
+        // Trigger MathJax to typeset LaTeX in the calculation report with retry for async loading
+        const typeset = (el) => {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetClear([el]);
+                window.MathJax.typesetPromise([el]).catch(err => console.warn('MathJax typeset:', err));
+            } else {
+                setTimeout(() => typeset(el), 100);
+            }
+        };
+        typeset(this.calcContent);
     }
 
     generateMatrixStiffnessReport(model, fr) {
